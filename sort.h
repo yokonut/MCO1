@@ -3,37 +3,62 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 #define STACK_LENGTH 32768
 
-struct point
+struct points
 {
     float x;
     float y;
 };
 
-struct point arr[STACK_LENGTH];
+struct points arr[STACK_LENGTH];
 
-void swap(struct point *a, struct point *b);
-void selectionSort(struct point arr[], int size);
-void mergesort(struct point arr[], int size);
-void merge_sort_recursion(struct point arr[], int l, int r);
-void merge_sorted_array(struct point arr[], int l, int m, int r);
+void swap(struct points *a, struct points *b);
+void selectionSort(struct points arr[], int size);
+void mergesort(struct points arr[], int size);
+void merge_sort_recursion(struct points arr[], int l, int r, struct points anchor);
+void merge_sorted_array(struct points arr[], int l, int m, int r, struct points anchor);
 
-void swap(struct point *a, struct point *b)
+void swap(struct points *a, struct points *b)
 {
-    struct point temp = *a;
+    struct points temp = *a;
     *a = *b;
     *b = temp;
 }
 
-void selectionSort(struct point arr[], int size)
+struct points findAnchor(struct points arr[], int size)
 {
+    struct points anchor = arr[0];
+    for (int i = 1; i < size; i++)
+    {
+        if (arr[i].y < anchor.y || (arr[i].y == anchor.y && arr[i].x < anchor.x))
+        {
+            anchor = arr[i];
+        }
+    }
+    return anchor;
+}
+
+float calculateAngle(struct points p, struct points anchor)
+{
+    return atan2(p.y - anchor.y, p.x - anchor.x);
+}
+
+void selectionSort(struct points arr[], int size)
+{
+    struct points anchor = findAnchor(arr, size);
+
     for (int j = 0; j < size - 1; j++)
     {
         int min_idx = j;
         for (int i = j + 1; i < size; i++)
         {
-            if (arr[i].y < arr[min_idx].y || (arr[i].y == arr[min_idx].y && arr[i].x < arr[min_idx].x))
+
+            float angle1 = calculateAngle(arr[i], anchor);
+            float angle2 = calculateAngle(arr[min_idx], anchor);
+
+            if (angle1 < angle2)
             {
                 min_idx = i;
             }
@@ -41,29 +66,30 @@ void selectionSort(struct point arr[], int size)
         swap(&arr[min_idx], &arr[j]);
     }
 }
-void mergesort(struct point arr[], int size)
+void mergesort(struct points arr[], int size)
 {
-    merge_sort_recursion(arr, 0, size - 1);
+    struct points anchor = findAnchor(arr, size);
+    merge_sort_recursion(arr, 0, size - 1, anchor);
 }
 
-void merge_sort_recursion(struct point arr[], int l, int r)
+void merge_sort_recursion(struct points arr[], int l, int r, struct points anchor)
 {
     if (l < r)
     {
         int m = l + (r - l) / 2;
-        merge_sort_recursion(arr, l, m);
-        merge_sort_recursion(arr, m + 1, r);
-        merge_sorted_array(arr, l, m, r);
+        merge_sort_recursion(arr, l, m, anchor);
+        merge_sort_recursion(arr, m + 1, r, anchor);
+        merge_sorted_array(arr, l, m, r, anchor);
     }
 }
 
-void merge_sorted_array(struct point arr[], int l, int m, int r)
+void merge_sorted_array(struct points arr[], int l, int m, int r, struct points anchor)
 {
 
     int left_length = m - l + 1;
     int right_length = r - m;
 
-    struct point temp_left[left_length], temp_right[right_length];
+    struct points temp_left[left_length], temp_right[right_length];
 
     for (int i = 0; i < left_length; i++)
         temp_left[i] = arr[l + i];
@@ -73,8 +99,9 @@ void merge_sorted_array(struct point arr[], int l, int m, int r)
     int i = 0, j = 0, k = l;
     while (i < left_length && j < right_length)
     {
-        if (temp_left[i].y < temp_right[j].y ||
-            (temp_left[i].y == temp_right[j].y && temp_left[i].x <= temp_right[j].x))
+        float angle_left = calculateAngle(temp_left[i], anchor);
+        float angle_right = calculateAngle(temp_right[j], anchor);
+        if (angle_left < angle_right)
         {
             arr[k++] = temp_left[i++];
         }

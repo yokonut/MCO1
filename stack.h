@@ -1,4 +1,5 @@
-
+#include <stdio.h>
+#include <stdbool.h>
 #define STACK_LENGTH 32768
 
 struct point
