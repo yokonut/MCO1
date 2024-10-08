@@ -1,7 +1,9 @@
-#include "stack.h"
-#include "sort.h"
+#include "stack.c"
+#include "sort.c"
 
-int CCW(struct point a, struct point b, struct point c)
+
+//vector multiplication to find if the direction is counterclockwise or clockwise
+float CCW(struct point a, struct point b, struct point c)
 {
     float area = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
     if (area < 0)
@@ -14,6 +16,7 @@ int CCW(struct point a, struct point b, struct point c)
 
 int main()
 {
+    int index = 0;
     Stack a;
 
     struct point arr[STACK_LENGTH] =
@@ -31,8 +34,28 @@ int main()
 
     selectionSort(arr, 10);
 
-    CREATE(&a);
-    push(&a, arr[0].x, arr[0].y);
+    for (int i = 0; i < 10; i++)
+    {
+        printf("Point %d: (%.2f, %.2f)\n", i, arr[i].x, arr[i].y);
+    }
 
+    CREATE(&a);
+    push(&a, index);
+
+    for (int i = 1; i < 10; i++)
+    {
+        while (a.top > 0 && CCW(arr[NEXT_TO_TOP(a)], arr[TOP(a)], arr[i]) <= 0)
+        {
+            POP(&a);
+        }
+        push(&a, i);
+    }
+
+    printf("Convex Hull:\n");
+    while (!ISEMPTY(&a))
+    {
+        int idx = POP(&a);
+        printf("(%f, %f)\n", arr[idx].x, arr[idx].y);
+    }
     return 0;
 }

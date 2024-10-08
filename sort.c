@@ -1,5 +1,6 @@
 #include "sort.h"
 
+//swapping function of two struct point datatypes
 void swap(struct point *a, struct point *b)
 {
     struct point temp = *a;
@@ -7,31 +8,35 @@ void swap(struct point *a, struct point *b)
     *b = temp;
 }
 
+// finds the anchor of the points and returns that point
 struct point findAnchor(struct point arr[], int size)
 {
-    struct point anchor = arr[0];
+    struct point anchor = arr[0]; // first initialize the anchor into the first array
     for (int i = 1; i < size; i++)
     {
-        if (arr[i].y < anchor.y || (arr[i].y == anchor.y && arr[i].x < anchor.x))
+        if (arr[i].y < anchor.y || (arr[i].y == anchor.y && arr[i].x < anchor.x)) //checks the smallest y value point if there y values are equal check the smallest x
         {
-            anchor = arr[i];
+            anchor = arr[i];                                                      //assign the smaller value 
         }
     }
-    return anchor;
+    return anchor;  //return the anchor point
 }
 
+//calculates the angle from previous current and next point
 float calculateAngle(struct point p, struct point anchor)
 {
-    return atan2(p.y - anchor.y, p.x - anchor.x);
+    return atan2(p.y - anchor.y, p.x - anchor.x);   //idk this was given in a site 
 }
 
+
+//selection sort
 void selectionSort(struct point arr[], int size)
 {
-    struct point anchor = findAnchor(arr, size);
+    struct point anchor = findAnchor(arr, size);    // call anchor function and assign it to struct anchor
 
     for (int j = 0; j < size - 1; j++)
     {
-        int min_idx = j;
+        int min_idx = j;                            
         for (int i = j + 1; i < size; i++)
         {
 
@@ -46,6 +51,8 @@ void selectionSort(struct point arr[], int size)
         swap(&arr[min_idx], &arr[j]);
     }
 }
+
+//merge sort
 void mergesort(struct point arr[], int size)
 {
     struct point anchor = findAnchor(arr, size);
@@ -97,6 +104,8 @@ void merge_sorted_array(struct point arr[], int l, int m, int r, struct point an
         arr[k++] = temp_right[j++];
 }
 
+
+/*
 int main()
 {
     struct point data[STACK_LENGTH];
@@ -126,3 +135,4 @@ int main()
     }
 }
 
+*/

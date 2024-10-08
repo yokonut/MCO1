@@ -1,92 +1,95 @@
 #include "stack.h"
 
-
-
+//s.top basically is the index of the stack and we initialize it to -1
 void CREATE(Stack *s)
 {
     s->top = -1;
 }
 
+//if the index is MAX - 1 then the stack is full 
 bool ISFULL(Stack *s)
 {
     return s->top == STACK_LENGTH - 1;
 }
 
+//if the index is -1 then the stack is still empty
 bool ISEMPTY(Stack *s)
 {
     return s->top == -1;
 }
 
-void push(Stack *s, float x, float y)
+//if the stack isn't full it increments the index and adds the index value to the point array
+void push(Stack *s, int index)
 {
     if (!ISFULL(s))
     {
 
-        ++s->top;
+        ++s->top; // increment top
 
-        s->arr[s->top].x = x;
-        s->arr[s->top].y = y;
-
-        printf("Pushed x = %f and y = %f onto the stack\n", x, y);
+        s->arr[s->top] = index; //assign index value to the point array
+        printf("Pushed = %d\n", index);
     }
 }
 
-struct point POP(Stack *s)
+//decrements the index while it isn't empty and returns value of the popped index
+int POP(Stack *s)
 {
-    if (!ISEMPTY(s))
+    if (!ISEMPTY(s)) 
     {
 
-        struct point popped = s->arr[s->top];
-        s->top--;
-        return popped;
+        int popped = s->arr[s->top];    //puts the to be removed value into variable popped
+        s->top--;                       //decrement top
+        return popped;                  //returned the value that was lost
     }
-
 }
 
-struct point TOP(Stack s)
+//returns the top value of the stack
+int TOP(Stack s)
 {
     return s.arr[s.top];
 }
 
-struct point NEXT_TO_TOP(Stack s)
+
+//returns the second most top value of the stack
+int NEXT_TO_TOP(Stack s)
 {
     return s.arr[--s.top];
 }
 
-
+/*
 int main()
 {
     Stack stack;
     // Initialize the stack
     CREATE(&stack);
-    struct point top;
+    int top;
 
     // Push elements onto the stack and print the stack after each push
-    push(&stack, 3.5,4.5);
+    push(&stack, 3.5);
     top = TOP(stack);
-    printf("Top element: %f and %f\n", top.x, top.y);
+    printf("Top element: %d\n", top);
 
-    push(&stack, 5.4,2.3);
+    push(&stack, 5.4);
     top = TOP(stack);
-    printf("Top element: %f and %f\n", top.x, top.y);
+    printf("Top element: %d\n", top);
 
-    push(&stack, 2.1,8.7);
+    push(&stack, 2.1);
     top = TOP(stack);
-    printf("Top element: %f and %f\n", top.x, top.y);
+    printf("Top element: %d\n", top);
 
-    push(&stack, 8.2,9.5);
+    push(&stack, 8.2);
     top = TOP(stack);
-    printf("Top element: %f and %f\n", top.x, top.y);
+    printf("Top element: %d\n", top);
 
-    struct point popped = POP(&stack);
-    printf("popped element: %f and %f\n", popped.x, popped.y);
+    int popped = POP(&stack);
+    printf("popped element: %d\n", popped);
     top = TOP(stack);
-    printf("Top element: %f and %f\n", top.x, top.y);
+    printf("Top element: %d\n", top);
 
-    struct point next = NEXT_TO_TOP(stack);
-    printf("Next to top element: %f and %f\n", next.x, next.y);
+    int next = NEXT_TO_TOP(stack);
+    printf("Next to top element: %d", next);
     // Pop elements from the stack and print the stack after each pop
-
 
     return 0;
 }
+*/
