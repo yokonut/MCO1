@@ -1,5 +1,17 @@
 #include "stack.c"
 #include "sort.c"
+#include <time.h>
+
+// CAN delete when we have data to put
+void randomizePoints(struct point arr[], int size)
+{
+    srand(time(NULL)); // Seed the random number generator
+    for (int i = 0; i < size; i++)
+    {
+        arr[i].x = ((float)rand() / RAND_MAX) * 100; // Random float between 0 and 100
+        arr[i].y = ((float)rand() / RAND_MAX) * 100; // Random float between 0 and 100
+    }
+}
 
 float CCW(struct point a, struct point b, struct point c)
 {
@@ -14,27 +26,21 @@ float CCW(struct point a, struct point b, struct point c)
 
 int main()
 {
+
     int index = 0;
     Stack a;
 
-    struct point arr[STACK_LENGTH] =
-        {
-            {14.39, 14.98},
-            {3.10, 5.00},
-            {2.11, 8.46},
-            {14.25, 8.66},
-            {5.82, 19.58},
-            {17.09, 17.7},
-            {11.40, 4.96},
-            {3.74, 9.07},
-            {1.08, 11.89},
-            {8.85, 8.11}};
+    struct point arr[STACK_LENGTH];
 
+    //just randomizing poitns
+    randomizePoints(arr, 10);
+
+
+    clock_t the_start = clock();
     mergesort(arr, 10);
 
-    for (int i = 0; i < 10; i++)
-    {
-        printf("Point %d: (%.2f, %.2f)\n", i, arr[i].x, arr[i].y);
+    for(int i =0; i < 10; i++){
+        printf("(%f,%f)\n", arr[i].x, arr[i].y);
     }
 
     CREATE(&a);
@@ -55,5 +61,11 @@ int main()
         int idx = POP(&a);
         printf("(%f, %f)\n", arr[idx].x, arr[idx].y);
     }
+
+    clock_t end_time = clock();
+
+    double time_taken = ((double)(end_time - the_start)) /CLOCKS_PER_SEC;
+    printf("Time taken: %.6f seconds\n", time_taken);
+
     return 0;
 }

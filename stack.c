@@ -27,7 +27,6 @@ void push(Stack *s, int index)
         ++s->top; // increment top
 
         s->arr[s->top] = index; //assign index value to the point array
-        printf("Pushed = %d\n", index);
     }
 }
 

@@ -1,1 +1,1 @@
-#include "sort.h"
+randomizePoints(arr,STACK_LENGTH);

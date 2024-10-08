@@ -1,8 +1,21 @@
 #include "stack.c"
 #include "sort.c"
+#include "time.h"
 
 
-//vector multiplication to find if the direction is counterclockwise or clockwise
+
+void randomizePoints(struct point arr[], int size)
+{
+    srand(time(NULL)); // Seed the random number generator
+    for (int i = 0; i < size; i++)
+    {
+        arr[i].x = ((float)rand() / RAND_MAX) * 100; // Random float between 0 and 100
+        arr[i].y = ((float)rand() / RAND_MAX) * 100; // Random float between 0 and 100
+    }
+}
+
+
+// vector multiplication to find if the direction is counterclockwise or clockwise
 float CCW(struct point a, struct point b, struct point c)
 {
     float area = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
@@ -14,42 +27,36 @@ float CCW(struct point a, struct point b, struct point c)
     return 0;
 }
 
+
+
 int main()
 {
+   
     int index = 0;
     Stack a;
+    struct point arr[STACK_LENGTH];
 
-    struct point arr[STACK_LENGTH] =
-        {
-            {14.39, 14.98},
-            {3.10, 5.00},
-            {2.11, 8.46},
-            {14.25, 8.66},
-            {5.82, 19.58},
-            {17.09, 17.7},
-            {11.40, 4.96},
-            {3.74, 9.07},
-            {1.08, 11.89},
-            {8.85, 8.11}};
+    randomizePoints(arr,10);
 
+    // Record start time
+    clock_t start_time = clock();
+
+    // scan 1 uses selection sort
     selectionSort(arr, 10);
 
-    for (int i = 0; i < 10; i++)
-    {
-        printf("Point %d: (%.2f, %.2f)\n", i, arr[i].x, arr[i].y);
-    }
-
-    CREATE(&a);
-    push(&a, index);
+    CREATE(&a);      // initialize stack
+    push(&a, index); // adds the anchor point to the stack first
 
     for (int i = 1; i < 10; i++)
     {
-        while (a.top > 0 && CCW(arr[NEXT_TO_TOP(a)], arr[TOP(a)], arr[i]) <= 0)
+
+        while (a.top > 0 && CCW(arr[NEXT_TO_TOP(a)], arr[TOP(a)], arr[i]) <= 0) // condition a.top > 0 makes sure stack has atleast 2 data, and CWW function computes
         {
-            POP(&a);
+            POP(&a); // pops if CWW returns -1
         }
-        push(&a, i);
+        push(&a, i); // pushes all points where CWW isn't -1
     }
+
 
     printf("Convex Hull:\n");
     while (!ISEMPTY(&a))
@@ -57,5 +64,11 @@ int main()
         int idx = POP(&a);
         printf("(%f, %f)\n", arr[idx].x, arr[idx].y);
     }
+
+
+    clock_t end_time = clock();
+    double time_taken = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
+    printf("Time taken: %.6f seconds\n", time_taken);
+
     return 0;
 }
