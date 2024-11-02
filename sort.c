@@ -7,7 +7,7 @@ void swap(struct point *a, struct point *b)
     *a = *b;
     *b = temp;
 }
-
+///test
 // finds the anchor of the points and returns that point
 struct point findAnchor(struct point arr[], int size)
 {

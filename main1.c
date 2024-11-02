@@ -16,6 +16,8 @@ float CCW(struct point a, struct point b, struct point c) {
     return 0;     // Collinear
 }
 
+//test
+
 // Function to find the starting anchor point 
 int findAnchorIndex(struct point arr[], int num_points) {
     int anchor_index = 0;
