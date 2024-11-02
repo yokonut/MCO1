@@ -81,7 +81,7 @@ int main() {
     push(&main_stack, anchor_index);
 
     for (i = 0; i < num_points; i++) {
-        if (i != anchor_index) { // Skip the anchor without using 'continue'
+        if (i != anchor_index) { 
             while (!ISEMPTY(&main_stack) && main_stack.top > 0 &&
                    CCW(arr[NEXT_TO_TOP(main_stack)], arr[TOP(main_stack)], arr[i]) <= 0) {
                 POP(&main_stack);
