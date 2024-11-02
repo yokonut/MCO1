@@ -21,7 +21,6 @@ int findAnchorIndex(struct point arr[], int num_points) {
     int anchor_index = 0;
     int i;
     for (i = 1; i < num_points; i++) {
-    	//lowest point or leftmost if tied
         if (arr[i].y < arr[anchor_index].y || (arr[i].y == arr[anchor_index].y && arr[i].x < arr[anchor_index].x)) {
             anchor_index = i;
         }
@@ -82,12 +81,13 @@ int main() {
     push(&main_stack, anchor_index);
 
     for (i = 0; i < num_points; i++) {
-        if (i == anchor_index) continue;
-        while (!ISEMPTY(&main_stack) && main_stack.top > 0 &&
-               CCW(arr[NEXT_TO_TOP(main_stack)], arr[TOP(main_stack)], arr[i]) <= 0) {
-            POP(&main_stack);
+        if (i != anchor_index) { // Skip the anchor without using 'continue'
+            while (!ISEMPTY(&main_stack) && main_stack.top > 0 &&
+                   CCW(arr[NEXT_TO_TOP(main_stack)], arr[TOP(main_stack)], arr[i]) <= 0) {
+                POP(&main_stack);
+            }
+            push(&main_stack, i);
         }
-        push(&main_stack, i);
     }
 
     int hull_size = 0;
