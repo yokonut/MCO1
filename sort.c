@@ -72,7 +72,7 @@ void heapify(struct point arr[], int n, int i, struct point anchor) { //n is siz
     int right = 2 * i + 2;
 
     // Calculate angles for the current root, left, and right 
-    float angle_largest = calculateAngle(arr[largest], anchor);
+    float angle_largest = calculateAngle(arr[largest_val], anchor);     //IT'S LARGEST VAL RIGHT
     if (left < n && calculateAngle(arr[left], anchor) > angle_largest) {
         largest_val = left;
         angle_largest = calculateAngle(arr[left], anchor);
