@@ -74,7 +74,7 @@ int main() {
     fprintf(output_file, "Sorting Algorithm Used: Selection Sort\n");
 
     // Set start time
-    clock_t start = clock();
+    clock_t the_start = clock();
 
     int anchor_index = findAnchorIndex(arr, num_points);
 
@@ -100,7 +100,7 @@ int main() {
     }
 
     // End time
-    clock_t end = clock();   
+    clock_t the_end = clock();   
 
     fprintf(output_file, "Total number of points in the final convex hull: %d\n", hull_size);
     fprintf(output_file, "Final Convex Hull Points (bottom-to-top):\n");
@@ -112,7 +112,7 @@ int main() {
 
     fclose(output_file);
     printf("Convex hull points written to %s.\n", output_filename);
-    printf("Elapsed time: %.6lf milliseconds\n", (double)(end - start) * 1000.0 / CLOCKS_PER_SEC);      //double check formula
+    printf("Elapsed time: %.6lf milliseconds\n", (double)(the_end - the_start) * 1000.0 / CLOCKS_PER_SEC);      //double check formula
 
     return 0;
 }

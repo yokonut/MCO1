@@ -1,5 +1,7 @@
 #include "stack.h"
 
+#define STACK_LENGTH 32768
+
 //s.top basically is the index of the stack and we initialize it to -1
 void CREATE(Stack *s)
 {

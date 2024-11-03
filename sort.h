@@ -11,10 +11,10 @@ struct point
 
 
 
-#define STACK_LENGTH1 32768
+#define STACK_LENGTH 32768
 
 
-struct point arr[STACK_LENGTH1];
+struct point arr[STACK_LENGTH];
 
 void swap(struct point *a, struct point *b);
 struct point findAnchor(struct point arr[], int size);
