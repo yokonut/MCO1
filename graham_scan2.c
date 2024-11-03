@@ -19,7 +19,7 @@ float CCW(struct point a, struct point b, struct point c)
     if (area < 0)
         return -1;
     if (area > 0)
-        return 1;
+        return 1;                   
 
     return 0;
 }

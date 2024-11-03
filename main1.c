@@ -9,11 +9,20 @@
 // Function to determine the direction (CCW for counterclockwise) 
 float CCW(struct point a, struct point b, struct point c) {
     float area = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+
+    if (area < 0)
+        return 1; // Clockwise
+    if (area > 0)
+        return 2;  // Counterclockwise
+    return 0;     // Collinear
+
+    /*
     if (area < 0)
         return -1; // Clockwise
     if (area > 0)
         return 1;  // Counterclockwise
     return 0;     // Collinear
+    */
 }
 
 // Function to find the starting anchor point 
@@ -21,7 +30,8 @@ int findAnchorIndex(struct point arr[], int num_points) {
     int anchor_index = 0;
     int i;
     for (i = 1; i < num_points; i++) {
-        if (arr[i].y < arr[anchor_index].y || (arr[i].y == arr[anchor_index].y && arr[i].x < arr[anchor_index].x)) {
+        if (arr[i].y < arr[anchor_index].y || (arr[i].y == arr[anchor_index].y && arr[i].x < arr[anchor_index].x)) 
+        {
             anchor_index = i;
         }
     }
@@ -83,16 +93,20 @@ int main() {
     CREATE(&reverse_stack);
     push(&main_stack, anchor_index);
 
-    for (i = 0; i < num_points; i++) {
-        if (i != anchor_index) { 
+    for (i = 0; i < num_points; i++) 
+    {
+        if (i != anchor_index) 
+        { 
             while (!ISEMPTY(&main_stack) && main_stack.top > 0 &&
-                   CCW(arr[NEXT_TO_TOP(main_stack)], arr[TOP(main_stack)], arr[i]) <= 0) {
-                POP(&main_stack);
+                   CCW(arr[NEXT_TO_TOP(main_stack)], arr[TOP(main_stack)], arr[i]) != 1)        //it's clockwise - removed <= 
+            {
+                POP(&main_stack);           //remove
             }
-            push(&main_stack, i);
+            push(&main_stack, i);           //add
         }
     }
 
+    //count the number of points
     int hull_size = 0;
     while (!ISEMPTY(&main_stack)) {
         push(&reverse_stack, POP(&main_stack));

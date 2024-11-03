@@ -18,13 +18,14 @@ void randomizePoints(struct point arr[], int size)
 // vector multiplication to find if the direction is counterclockwise or clockwise
 float CCW(struct point a, struct point b, struct point c)
 {
-    float area = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
-    if (area < 0)
+    // float area = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+    float area = (b.y - a.y) * (c.x - b.x) - (b.x - a.x) * (c.y - a.y);
+    
+    if (area < 0)       //counter-clockwise
         return -1;
-    if (area > 0)
+    if (area > 0)          //clockwise
         return 1;
-
-    return 0;
+    return 0;               //collinear
 }
 
 

@@ -1,8 +1,5 @@
 Sorting Algorithm Used: Selection Sort
-Total number of points in the final convex hull: 5
+Total number of points in the final convex hull: 2
 Final Convex Hull Points (bottom-to-top):
 (0.000000, 0.000000)
-(5.000000, 0.000000)
-(10.000000, 2.500000)
-(5.000000, 10.000000)
 (0.000000, 10.000000)
