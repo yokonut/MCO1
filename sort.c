@@ -82,9 +82,9 @@ void heapify(struct point arr[], int n, int i, struct point anchor) { //n is siz
     }
 
     // Swap and continue heapifying if the root is not largest
-    if (largest != i) {
-        swap(&arr[i], &arr[largest]);
-        heapify(arr, n, largest, anchor);
+    if (largest_val != i) {
+        swap(&arr[i], &arr[largest_val]);
+        heapify(arr, n, largest_val, anchor);
     }
 }
 

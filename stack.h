@@ -2,11 +2,11 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#define STACK_LENGTH 32768
+#define STACK_LENGTH1 32768
 
 typedef struct
 {
-    int arr[STACK_LENGTH];
+    int arr[STACK_LENGTH1];
     int top;
 } Stack;
 
