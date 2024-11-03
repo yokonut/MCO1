@@ -16,8 +16,6 @@ float CCW(struct point a, struct point b, struct point c) {
     return 0;     // Collinear
 }
 
-//test
-
 // Function to find the starting anchor point 
 int findAnchorIndex(struct point arr[], int num_points) {
     int anchor_index = 0;
@@ -75,6 +73,9 @@ int main() {
     selectionSort(arr, num_points);
     fprintf(output_file, "Sorting Algorithm Used: Selection Sort\n");
 
+    // Set start time
+    clock_t start = clock();
+
     int anchor_index = findAnchorIndex(arr, num_points);
 
     // Initialize the stacks
@@ -98,6 +99,9 @@ int main() {
         hull_size++;
     }
 
+    // End time
+    clock_t end = clock();   
+
     fprintf(output_file, "Total number of points in the final convex hull: %d\n", hull_size);
     fprintf(output_file, "Final Convex Hull Points (bottom-to-top):\n");
 
@@ -108,6 +112,7 @@ int main() {
 
     fclose(output_file);
     printf("Convex hull points written to %s.\n", output_filename);
+    printf("Elapsed time: %.6lf milliseconds\n", (double)(end - start) * 1000.0 / CLOCKS_PER_SEC);      //double check formula
 
     return 0;
 }
