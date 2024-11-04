@@ -18,6 +18,11 @@ float CCW(struct point a, struct point b, struct point c) {
 
 }
 
+float distance(struct point p1, struct point p2) 
+{
+    return (p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y);
+}
+
 // Function to find the starting anchor point 
 int findAnchorIndex(struct point arr[], int num_points) {
     int anchor_index = 0;
@@ -37,6 +42,7 @@ int main() {
     Stack main_stack, reverse_stack;
     struct point arr[STACK_LENGTH];
     int num_points, i;
+    int orientation;
 
     // Ask user for the input and output file names
     printf("Enter the input filename (input-circle.txt): ");
@@ -86,6 +92,7 @@ int main() {
     CREATE(&reverse_stack);
     push(&main_stack, anchor_index);
 
+/*          COLLINEAR BUG
     for (i = 0; i < num_points; i++) 
     {
         if (i != anchor_index) 
@@ -98,6 +105,38 @@ int main() {
             push(&main_stack, i);           //add
         }
     }
+
+*/
+
+for (i = 0; i < num_points; i++) {
+    if (i != anchor_index) {
+        while (!ISEMPTY(&main_stack) && main_stack.top > 0) {
+            int top_index = TOP(main_stack);
+            int next_to_top_index = NEXT_TO_TOP(main_stack);
+            
+            // Check the orientation
+            orientation = CCW(arr[next_to_top_index], arr[top_index], arr[i]);
+            
+            if (orientation == 1) {  // Clockwise
+                POP(&main_stack);
+            } 
+            else if (orientation == 0) {  // Collinear
+                // compare distances to decide whether to replace the top point
+                if (distance(arr[next_to_top_index], arr[top_index]) <
+                    distance(arr[next_to_top_index], arr[i])) {
+                    POP(&main_stack);  // Remove the closer point
+                } else {
+                    break;  // keep the farther point
+                }
+            } 
+            else {
+                break;  // ccw so keep the point and exit the loop
+            }
+        }
+        push(&main_stack, i);  // Add the current point
+    }
+}
+
 
     //count the number of points
     int hull_size = 0;

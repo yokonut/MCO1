@@ -97,6 +97,40 @@ int main() {
     CREATE(&reverse_stack);
     push(&main_stack, anchor_index);
 
+    for (i = 0; i < num_points; i++) {
+        if (i != anchor_index) 
+        {
+            while (!ISEMPTY(&main_stack) && main_stack.top > 0) 
+            {
+                int top_index = TOP(main_stack);
+                int next_to_top_index = NEXT_TO_TOP(main_stack);
+            
+                // Check the orientation
+                orientation = CCW(arr[next_to_top_index], arr[top_index], arr[i]);
+            
+                if (orientation == 1) {  // Clockwise
+                POP(&main_stack);
+                } 
+                else if (orientation == 0) {  // Collinear
+                    // compare distances to decide whether to replace the top point
+                    if (distance(arr[next_to_top_index], arr[top_index]) <
+                        distance(arr[next_to_top_index], arr[i])) 
+                    {
+                        POP(&main_stack);  // Remove the closer point
+                    } 
+                    else {
+                        break;  // keep the farther point
+                    }
+                } 
+                else {
+                    break;  // ccw so keep the point and exit the loop
+                }
+            }
+        push(&main_stack, i);  // Add the current point
+        }
+    }
+
+/*
     for (i = 0; i < num_points; i++) 
     {
         if (i != anchor_index) 
@@ -109,6 +143,9 @@ int main() {
             push(&main_stack, i);
         }
     }
+*/
+
+    
 
     int hull_size = 0;
     while (!ISEMPTY(&main_stack)) {
