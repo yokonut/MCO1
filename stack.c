@@ -42,6 +42,7 @@ int POP(Stack *s)
         s->top--;                       //decrement top
         return popped;                  //returned the value that was lost
     }
+    return -1;
 }
 
 //returns the top value of the stack
