@@ -19,7 +19,7 @@ float CCW(struct point a, struct point b, struct point c)
     if (area < 0)
         return -1;
     if (area > 0)
-        return 1;                   
+        return 1;
 
     return 0;
 }
@@ -32,14 +32,14 @@ int main()
 
     struct point arr[STACK_LENGTH];
 
-    //just randomizing poitns
+    // just randomizing poitns
     randomizePoints(arr, 10);
 
-
     clock_t the_start = clock();
-    mergesort(arr, 10);
+    heapSort(arr, 10);
 
-    for(int i =0; i < 10; i++){
+    for (int i = 0; i < 10; i++)
+    {
         printf("(%f,%f)\n", arr[i].x, arr[i].y);
     }
 
@@ -64,7 +64,7 @@ int main()
 
     clock_t end_time = clock();
 
-    double time_taken = ((double)(end_time - the_start)) /CLOCKS_PER_SEC;
+    double time_taken = ((double)(end_time - the_start)) / CLOCKS_PER_SEC;
     printf("Time taken: %.6f seconds\n", time_taken);
 
     return 0;

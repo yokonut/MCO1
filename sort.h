@@ -20,6 +20,5 @@ void swap(struct point *a, struct point *b);
 struct point findAnchor(struct point arr[], int size);
 float calculateAngle(struct point p, struct point anchor);
 void selectionSort(struct point arr[], int size);
-void mergesort(struct point arr[], int size);
-void merge_sort_recursion(struct point arr[], int l, int r, struct point anchor);
-void merge_sorted_array(struct point arr[], int l, int m, int r, struct point anchor);
+void heapify(struct point arr[], int n, int i, struct point anchor);
+void heapSort(struct point arr[], int size);
