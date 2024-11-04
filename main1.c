@@ -18,6 +18,7 @@ float CCW(struct point a, struct point b, struct point c) {
 
 }
 
+// Function to find distance between 2 points
 float distance(struct point p1, struct point p2) 
 {
     return (p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y);
@@ -66,12 +67,14 @@ int main() {
     }
 
     fscanf(input_file, "%d", &num_points);
-    if (num_points > STACK_LENGTH) {
+    if (num_points > STACK_LENGTH)           //Exceeds limit of number of points
+    {
         printf("Too many points, maximum allowed is %d.\n\nTerminating...\n", STACK_LENGTH);
         fclose(input_file);
         fclose(output_file);
         return 1;
-    } else if (num_points < 3) {
+    } else if (num_points < 3)          // Not enough points to make a polygon
+    {
         printf("Cannot make convex hull, minimum number of points is 3.\n\nTerminating...\n");
         fclose(input_file);
         fclose(output_file);
@@ -83,12 +86,12 @@ int main() {
     }
     fclose(input_file);
 
+    // Set start time
+    clock_t the_start = clock();
+
     // Sort the points using Selection Sort
     selectionSort(arr, num_points);
     fprintf(output_file, "Sorting Algorithm Used: Selection Sort\n");
-
-    // Set start time
-    clock_t the_start = clock();
 
     int anchor_index = findAnchorIndex(arr, num_points);
 
@@ -96,22 +99,6 @@ int main() {
     CREATE(&main_stack);
     CREATE(&reverse_stack);
     push(&main_stack, anchor_index);
-
-/*          COLLINEAR BUG
-    for (i = 0; i < num_points; i++) 
-    {
-        if (i != anchor_index) 
-        { 
-            while (!ISEMPTY(&main_stack) && main_stack.top > 0 &&
-                   CCW(arr[NEXT_TO_TOP(main_stack)], arr[TOP(main_stack)], arr[i]) != 2)        //it's clockwise - removed <= 
-            {
-                POP(&main_stack);           //remove
-            }
-            push(&main_stack, i);           //add
-        }
-    }
-
-*/
 
 for (i = 0; i < num_points; i++) {
     if (i != anchor_index) {
@@ -131,19 +118,19 @@ for (i = 0; i < num_points; i++) {
                     distance(arr[next_to_top_index], arr[i])) {
                     POP(&main_stack);  // Remove the closer point
                 } else {
-                    break;  // keep the farther point
+                    break;  // Keep the farther point
                 }
             } 
             else {
-                break;  // ccw so keep the point and exit the loop
+                break;  // CCW so keep the point and exit the loop
             }
         }
-        push(&main_stack, i);  // Add the current point
+        push(&main_stack, i);  // Add current point
     }
 }
 
 
-    //count the number of points
+    // Count the number of points
     int hull_size = 0;
     while (!ISEMPTY(&main_stack)) {
         push(&reverse_stack, POP(&main_stack));
@@ -156,6 +143,7 @@ for (i = 0; i < num_points; i++) {
     fprintf(output_file, "Total number of points in the final convex hull: %d\n", hull_size);
     fprintf(output_file, "Final Convex Hull Points (bottom-to-top):\n");
 
+    // Copy data unto output file
     while (!ISEMPTY(&reverse_stack)) {
         int idx = POP(&reverse_stack);
         fprintf(output_file, "(%f, %f)\n", arr[idx].x, arr[idx].y);
@@ -163,7 +151,7 @@ for (i = 0; i < num_points; i++) {
 
     fclose(output_file);
     printf("Convex hull points written to %s.\n", output_filename);
-    printf("Elapsed time: %.6lf milliseconds\n", (double)(the_end - the_start) * 1000.0 / CLOCKS_PER_SEC);      //double check formula
+    printf("Elapsed time: %.6lf milliseconds\n", (double)(the_end - the_start) * 1000.0 / CLOCKS_PER_SEC);
 
     return 0;
 }

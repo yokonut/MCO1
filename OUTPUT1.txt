@@ -1,4 +1,4 @@
-Sorting Algorithm Used: Selection Sort
+Sorting Algorithm Used: Heap Sort
 Total number of points in the final convex hull: 6
 Final Convex Hull Points (bottom-to-top):
 (20000.000000, 10000.000000)
