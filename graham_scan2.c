@@ -2,70 +2,80 @@
 #include "sort.c"
 #include <time.h>
 
-// CAN delete when we have data to put
-void randomizePoints(struct point arr[], int size)
-{
-    srand(time(NULL)); // Seed the random number generator
-    for (int i = 0; i < size; i++)
-    {
-        arr[i].x = ((float)rand() / RAND_MAX) * 100; // Random float between 0 and 100
-        arr[i].y = ((float)rand() / RAND_MAX) * 100; // Random float between 0 and 100
-    }
-}
-
 float CCW(struct point a, struct point b, struct point c)
 {
     float area = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
-    if (area < 0)
-        return -1;
-    if (area > 0)
-        return 1;
 
-    return 0;
+    if (area < 0)
+        return 1; // Clockwise
+    if (area > 0)
+        return 2; // Counterclockwise
+    return 0;     // Collinear
 }
 
-int main()
+// Function to find distance between points
+float distance(struct point p1, struct point p2)
 {
+    return (p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y);
+}
 
-    int index = 0;
-    Stack a;
-
-    struct point arr[STACK_LENGTH];
-
-    // just randomizing poitns
-    randomizePoints(arr, 10);
-
-    clock_t the_start = clock();
-    heapSort(arr, 10);
-
-    for (int i = 0; i < 10; i++)
+// Function to find the starting anchor point
+int findAnchorIndex(struct point arr[], int num_points)
+{
+    int anchor_index = 0;
+    int i;
+    for (i = 1; i < num_points; i++)
     {
-        printf("(%f,%f)\n", arr[i].x, arr[i].y);
-    }
-
-    CREATE(&a);
-    push(&a, index);
-
-    for (int i = 1; i < 10; i++)
-    {
-        while (a.top > 0 && CCW(arr[NEXT_TO_TOP(a)], arr[TOP(a)], arr[i]) <= 0)
+        if (arr[i].y < arr[anchor_index].y || (arr[i].y == arr[anchor_index].y && arr[i].x < arr[anchor_index].x))
         {
-            POP(&a);
+            anchor_index = i;
         }
-        push(&a, i);
     }
+    return anchor_index;
+}
 
-    printf("Convex Hull:\n");
-    while (!ISEMPTY(&a))
+// Main convex hull computation function
+void computeConvexHull(struct point arr[], int num_points, Stack *main_stack)
+{
+    // Sort points by polar angle relative to the anchor
+    heapSort(arr, num_points);
+    int anchor_index = findAnchorIndex(arr, num_points);
+
+    // Initialize main_stack and add anchor point
+    push(main_stack, anchor_index);
+
+    for (int i = 0; i < num_points; i++)
     {
-        int idx = POP(&a);
-        printf("(%f, %f)\n", arr[idx].x, arr[idx].y);
+        if (i != anchor_index)
+        {
+            while (!ISEMPTY(main_stack) && main_stack->top > 0)
+            {
+                int top_index = TOP(*main_stack);
+                int next_to_top_index = NEXT_TO_TOP(*main_stack);
+
+                // Determine orientation of the sequence of points
+                int orientation = CCW(arr[next_to_top_index], arr[top_index], arr[i]);
+                if (orientation == 1)
+                { // Clockwise
+                    POP(main_stack);
+                }
+                else if (orientation == 0)
+                { // Collinear
+                    if (distance(arr[next_to_top_index], arr[top_index]) < distance(arr[next_to_top_index], arr[i]))
+                    {
+                        POP(main_stack);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+            push(main_stack, i); // Add current point to the hull
+        }
     }
-
-    clock_t end_time = clock();
-
-    double time_taken = ((double)(end_time - the_start)) / CLOCKS_PER_SEC;
-    printf("Time taken: %.6f seconds\n", time_taken);
-
-    return 0;
 }

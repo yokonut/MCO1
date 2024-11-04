@@ -1,54 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "stack.c"
-#include "sort.c"
+#include "graham_scan2.c"
 
 #define STACK_LENGTH 32768
 
-// Function to determine the direction (CCW for counterclockwise) 
-/*
-float CCW(struct point a, struct point b, struct point c) {
-    float area = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
-    if (area < 0)
-        return -1; // Clockwise
-    if (area > 0)
-        return 1;  // Counterclockwise
-    return 0;     // Collinear
-}
-*/
-
-// Function to determine the direction (CCW for counterclockwise) 
-float CCW(struct point a, struct point b, struct point c) {
-    float area = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
-
-    if (area < 0)
-        return 1; // Clockwise
-    if (area > 0)
-        return 2;  // Counterclockwise
-    return 0;     // Collinear
-
-}
-
-// Function to find distance between points
-float distance(struct point p1, struct point p2) 
+int main()
 {
-    return (p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y);
-}
-
-// Function to find the starting anchor point 
-int findAnchorIndex(struct point arr[], int num_points) {
-    int anchor_index = 0;
-    int i;
-    for (i = 1; i < num_points; i++) {
-        if (arr[i].y < arr[anchor_index].y || (arr[i].y == arr[anchor_index].y && arr[i].x < arr[anchor_index].x)) {
-            anchor_index = i;
-        }
-    }
-    return anchor_index;
-}
-
-int main() {
     char input_filename[100], output_filename[100];
     FILE *input_file, *output_file;
     Stack main_stack, reverse_stack;
@@ -64,27 +22,30 @@ int main() {
 
     // Read input file
     input_file = fopen(input_filename, "r");
-    if (input_file == NULL) {
+    if (input_file == NULL)
+    {
         printf("Error opening input file.\n");
         return 1;
     }
 
     // Write output file
     output_file = fopen(output_filename, "w");
-    if (output_file == NULL) {
+    if (output_file == NULL)
+    {
         printf("Error opening output file.\n");
         fclose(input_file);
         return 1;
     }
 
     fscanf(input_file, "%d", &num_points);
-    if (num_points > STACK_LENGTH)          //Exceeds limit of number of points
+    if (num_points > STACK_LENGTH) // Exceeds limit of number of points
     {
         printf("Too many points, maximum allowed is %d.\n\nTerminating...\n", STACK_LENGTH);
         fclose(input_file);
         fclose(output_file);
         return 1;
-    } else if (num_points < 3)              //Number of points does not make a polygon
+    }
+    else if (num_points < 3) // Number of points does not make a polygon
     {
         printf("Cannot make convex hull, minimum number of points is 3.\n\nTerminating...\n");
         fclose(input_file);
@@ -92,7 +53,7 @@ int main() {
         return 1;
     }
 
-    for (i = 0; i < num_points; i++) 
+    for (i = 0; i < num_points; i++)
     {
         fscanf(input_file, "%f %f", &arr[i].x, &arr[i].y);
     }
@@ -101,8 +62,6 @@ int main() {
     // Set start time
     clock_t the_start = clock();
 
-    // Sort the points using Heap Sort
-    heapSort(arr, num_points);
     fprintf(output_file, "Sorting Algorithm Used: Heap Sort\n");
 
     int anchor_index = findAnchorIndex(arr, num_points);
@@ -110,56 +69,23 @@ int main() {
     // Initialize the stacks
     CREATE(&main_stack);
     CREATE(&reverse_stack);
-    push(&main_stack, anchor_index);
-
-    for (i = 0; i < num_points; i++) 
-    {
-        if (i != anchor_index) 
-        {
-            while (!ISEMPTY(&main_stack) && main_stack.top > 0) 
-            {
-                int top_index = TOP(main_stack);
-                int next_to_top_index = NEXT_TO_TOP(main_stack);
-            
-                // Check orientation
-                orientation = CCW(arr[next_to_top_index], arr[top_index], arr[i]);
-            
-                if (orientation == 1) {  // Clockwise
-                POP(&main_stack);
-                } 
-                else if (orientation == 0) {  // Collinear
-                    // Compare distances to decide whether to replace the top point
-                    if (distance(arr[next_to_top_index], arr[top_index]) <
-                        distance(arr[next_to_top_index], arr[i])) 
-                    {
-                        POP(&main_stack);  // Remove the closer point
-                    } 
-                    else {
-                        break;  // Keep the farther point
-                    }
-                } 
-                else {
-                    break;  // CCW so keep the point and exit the loop
-                }
-            }
-        push(&main_stack, i);  // Add current point
-        }
-    }    
+    computeConvexHull(arr, num_points, &main_stack);
 
     int hull_size = 0;
-    while (!ISEMPTY(&main_stack)) {
+    while (!ISEMPTY(&main_stack))
+    {
         push(&reverse_stack, POP(&main_stack));
         hull_size++;
     }
 
     // End time
-    clock_t the_end = clock();   
+    clock_t the_end = clock();
 
     fprintf(output_file, "Total number of points in the final convex hull: %d\n", hull_size);
     fprintf(output_file, "Final Convex Hull Points (bottom-to-top):\n");
 
     // Copy data unto output file
-    while (!ISEMPTY(&reverse_stack)) 
+    while (!ISEMPTY(&reverse_stack))
     {
         int idx = POP(&reverse_stack);
         fprintf(output_file, "(%f, %f)\n", arr[idx].x, arr[idx].y);
@@ -167,10 +93,9 @@ int main() {
 
     fclose(output_file);
 
-    //Print out message
+    // Print out message
     printf("Convex hull points written to %s.\n", output_filename);
     printf("Elapsed time: %.6lf milliseconds\n", (double)(the_end - the_start) * 1000.0 / CLOCKS_PER_SEC);
 
     return 0;
 }
-
