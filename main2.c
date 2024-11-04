@@ -4,9 +4,10 @@
 #include "stack.c"
 #include "sort.c"
 
-#define STACK_LENGTH 100
+#define STACK_LENGTH 32768
 
 // Function to determine the direction (CCW for counterclockwise) 
+/*
 float CCW(struct point a, struct point b, struct point c) {
     float area = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
     if (area < 0)
@@ -14,6 +15,19 @@ float CCW(struct point a, struct point b, struct point c) {
     if (area > 0)
         return 1;  // Counterclockwise
     return 0;     // Collinear
+}
+*/
+
+// Function to determine the direction (CCW for counterclockwise) 
+float CCW(struct point a, struct point b, struct point c) {
+    float area = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+
+    if (area < 0)
+        return 1; // Clockwise
+    if (area > 0)
+        return 2;  // Counterclockwise
+    return 0;     // Collinear
+
 }
 
 // Function to find the starting anchor point 
@@ -83,10 +97,13 @@ int main() {
     CREATE(&reverse_stack);
     push(&main_stack, anchor_index);
 
-    for (i = 0; i < num_points; i++) {
-        if (i != anchor_index) { 
+    for (i = 0; i < num_points; i++) 
+    {
+        if (i != anchor_index) 
+        { 
             while (!ISEMPTY(&main_stack) && main_stack.top > 0 &&
-                   CCW(arr[NEXT_TO_TOP(main_stack)], arr[TOP(main_stack)], arr[i]) <= 0) {
+                   CCW(arr[NEXT_TO_TOP(main_stack)], arr[TOP(main_stack)], arr[i]) != 2) 
+            {
                 POP(&main_stack);
             }
             push(&main_stack, i);

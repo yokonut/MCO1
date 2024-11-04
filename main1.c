@@ -4,7 +4,7 @@
 #include "stack.c"
 #include "sort.c"
 
-#define STACK_LENGTH 100
+#define STACK_LENGTH 32768
 
 // Function to determine the direction (CCW for counterclockwise) 
 float CCW(struct point a, struct point b, struct point c) {
@@ -16,13 +16,6 @@ float CCW(struct point a, struct point b, struct point c) {
         return 2;  // Counterclockwise
     return 0;     // Collinear
 
-    /*
-    if (area < 0)
-        return -1; // Clockwise
-    if (area > 0)
-        return 1;  // Counterclockwise
-    return 0;     // Collinear
-    */
 }
 
 // Function to find the starting anchor point 
@@ -98,7 +91,7 @@ int main() {
         if (i != anchor_index) 
         { 
             while (!ISEMPTY(&main_stack) && main_stack.top > 0 &&
-                   CCW(arr[NEXT_TO_TOP(main_stack)], arr[TOP(main_stack)], arr[i]) != 1)        //it's clockwise - removed <= 
+                   CCW(arr[NEXT_TO_TOP(main_stack)], arr[TOP(main_stack)], arr[i]) != 2)        //it's clockwise - removed <= 
             {
                 POP(&main_stack);           //remove
             }

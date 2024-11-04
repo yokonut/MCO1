@@ -1,6 +1,6 @@
 #include "stack.h"
 
-#define STACK_LENGTH 32768
+#define STACK_MAX 32768
 
 //s.top basically is the index of the stack and we initialize it to -1
 void CREATE(Stack *s)
@@ -11,7 +11,7 @@ void CREATE(Stack *s)
 //if the index is MAX - 1 then the stack is full 
 bool ISFULL(Stack *s)
 {
-    return s->top == STACK_LENGTH - 1;
+    return s->top == STACK_MAX - 1;
 }
 
 //if the index is -1 then the stack is still empty
