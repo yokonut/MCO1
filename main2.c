@@ -30,6 +30,11 @@ float CCW(struct point a, struct point b, struct point c) {
 
 }
 
+float distance(struct point p1, struct point p2) 
+{
+    return (p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y);
+}
+
 // Function to find the starting anchor point 
 int findAnchorIndex(struct point arr[], int num_points) {
     int anchor_index = 0;
@@ -48,6 +53,7 @@ int main() {
     Stack main_stack, reverse_stack;
     struct point arr[STACK_LENGTH];
     int num_points, i;
+    int orientation;
 
     // Ask user for the input and output file names
     printf("Enter the input filename (input-circle.txt): ");
