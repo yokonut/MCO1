@@ -71,6 +71,11 @@ int main() {
         fclose(input_file);
         fclose(output_file);
         return 1;
+    } else if (num_points < 3) {
+        printf("Cannot make convex hull, minimum number of points is 3.\n\nTerminating...\n");
+        fclose(input_file);
+        fclose(output_file);
+        return 1;
     }
 
     for (i = 0; i < num_points; i++) {
